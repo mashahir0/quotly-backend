@@ -1,21 +1,23 @@
-# Base image with Node
+# 1. Use Node base image
 FROM node:18
 
-# Create app directory
+# 2. Create app directory
 WORKDIR /app
 
-# Install app dependencies
+# 3. Copy dependency files first
 COPY package*.json ./
+
+# 4. Install dependencies
 RUN npm install
 
-# Copy source files
+# 5. Copy all files
 COPY . .
 
-# Compile TypeScript
+# 6. Build TypeScript
 RUN npm run build
 
-# Expose port (adjust to your app)
+# 7. Expose the port
 EXPOSE 3000
 
-# Run the app (assumes output in 'dist/index.js')
-CMD ["node", "dist/index.js"]
+# 8. Start the app
+CMD ["npm", "start"]
