@@ -78,14 +78,14 @@ io.on("connection", (socket) => {
   
 
   socket.on("markSeen", async ({ senderId, receiverId }) => {
-    console.log("📥 Received markSeen:", { senderId, receiverId });
+
   
     if (!senderId || !receiverId) return;
   
     await chatRepository.markMessagesAsSeen(receiverId, senderId);
   
     if (users[senderId]) {
-      console.log("📤 Emitting messagesSeen to:", senderId);
+
       io.to(users[senderId]).emit("messagesSeen", {
         from: receiverId,
       });
