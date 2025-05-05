@@ -12,7 +12,7 @@ router.post("/register", userController.register);
 router.post("/send-otp",otpRateLimiter,sendOtp);
 router.post("/verify-otp", verifyOtp);
 router.post("/reset-password",userController.resetPasswordController);
-router.post("/login",userController.login);
+router.post("/login",loginLimiter,userController.login);
 
 router.post("/auth/google", userController.googleAuth);
 
