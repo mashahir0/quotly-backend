@@ -1,13 +1,16 @@
+
+
+
 version: '3'
 services:
   app:
-    build: .
+    image: mashahir/quotly_server:server-app
     ports:
       - "3000:3000"
     depends_on:
       - redis
     env_file:
-      - .env   # 👈 This loads environment variables from .env
+      - .env
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
