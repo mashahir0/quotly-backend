@@ -10,44 +10,53 @@ interface AuthenticatedRequest extends Request {
 
 
 const chatController = {
-  // ✅ Send a new message
-//   async sendMessage(req: AuthenticatedRequest, res: Response) {
+ 
+// async sendMessage(req: AuthenticatedRequest, res: Response) {
 //     try {
-//         console.log('send messag cont')
-//       const { receiverId, message } = req.body;
-//       const senderId = req.user?.id;
-//       if (!senderId || !receiverId || !message) return res.status(400).json({ message: "Invalid data" });
+//         const { receiverId, message } = req.body;
+//         const senderId = req.user?.id;
 
-//       const newMessage = await chatService.sendMessage(senderId, receiverId, message);
-//       console.log(`📩 Sending message from ${senderId} to ${receiverId}`);
-//         console.log(`Message Content:`, newMessage);
-
-//     io.to(receiverId).emit("newMessage", newMessage);
-//     io.to(senderId).emit("newMessage", newMessage);
+//         if (!senderId || !receiverId || !message) {
+//             return res.status(400).json({ message: "Invalid data" });
+//         }
 
 
-//       res.status(201).json(newMessage);
-//     } catch (error:any) {
-//       res.status(500).json({ message: "Error sending message", error: error.message });
+//         const newMessage = await chatService.sendMessage(senderId, receiverId, message);
+
+
+//         res.status(201).json(newMessage);
+//     } catch (error: any) {
+//         res.status(500).json({ message: "Error sending message", error: error.message });
 //     }
-//   },
+// },
+
 async sendMessage(req: AuthenticatedRequest, res: Response) {
-    try {
-        const { receiverId, message } = req.body;
-        const senderId = req.user?.id;
+  try {
+    const { receiverId, message } = req.body;
+    const senderId = req.user?.id;
 
-        if (!senderId || !receiverId || !message) {
-            return res.status(400).json({ message: "Invalid data" });
-        }
-
-        // Store message in DB
-        const newMessage = await chatService.sendMessage(senderId, receiverId, message);
-
-        // ✅ Do NOT emit via WebSocket (handled separately)
-        res.status(201).json(newMessage);
-    } catch (error: any) {
-        res.status(500).json({ message: "Error sending message", error: error.message });
+    if (!senderId || !receiverId || typeof message !== "string") {
+      return res.status(400).json({ message: "Invalid data" });
     }
+
+    const trimmedMessage = message.trim();
+
+    // Basic validation
+    if (trimmedMessage.length === 0) {
+      return res.status(400).json({ message: "Message cannot be empty" });
+    }
+
+    if (trimmedMessage.length > 400) {
+      return res.status(400).json({ message: "Message exceeds 400 characters" });
+    }
+
+    // Store message
+    const newMessage = await chatService.sendMessage(senderId, receiverId, trimmedMessage);
+
+    res.status(201).json(newMessage);
+  } catch (error: any) {
+    res.status(500).json({ message: "Error sending message", error: error.message });
+  }
 },
 
 
