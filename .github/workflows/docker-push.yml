@@ -39,6 +39,6 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           cd ~/quotly-server
-          docker pull mashahir/quotly_server:server-app
-          docker-compose down
-          docker-compose up -d --remove-orphans
+          sudo docker pull mashahir/quotly_server:server-app
+          sudo docker-compose down
+          sudo docker-compose up -d --remove-orphans
